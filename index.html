@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hostingku - Upload File</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 2rem; }
+    .upload-box { background: #1e293b; padding: 2rem; border-radius: 1rem; display: inline-block; }
+    input[type=file] { display: block; margin: 1rem auto; }
+    button { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
+    button:hover { background: #2563eb; }
+    #result { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Upload File ke Hostingku</h1>
+  <div class="upload-box">
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">Upload</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) return alert('Pilih file dulu!');
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('/upload', { method: 'POST', body: formData });
+      const json = await res.json();
+      const out = document.getElementById('result');
+      if (json.url) {
+        out.innerHTML = '<p>URL: <a href="' + json.url + '" target="_blank">' + json.url + '</a></p>';
+      } else {
+        out.innerText = 'Error: ' + (json.error || 'Gagal upload');
+      }
+    }
+  </script>
+</body>
+</html>
